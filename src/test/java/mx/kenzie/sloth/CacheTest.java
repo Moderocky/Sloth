@@ -2,6 +2,8 @@ package mx.kenzie.sloth;
 
 import junit.framework.TestCase;
 
+import java.util.WeakHashMap;
+
 public class CacheTest extends TestCase {
     
     public void testWeak() {
@@ -11,7 +13,7 @@ public class CacheTest extends TestCase {
     }
     
     public void testIsPresent() {
-        final Cache<String, Object> cache = Cache.weak();
+        final Cache<String, Object> cache = Cache.weak(WeakHashMap::new);
         cache.put("hello", "there");
         assert cache instanceof WeakCache<String, Object>;
         assert cache.isPresent("hello");

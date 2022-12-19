@@ -3,15 +3,16 @@ package mx.kenzie.sloth;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.*;
+import java.util.function.Supplier;
 
 public interface Cache<Key, Value> extends Map<Key, Value> {
     
-    static <Key, Value> Cache<Key, Value> weak() {
-        return new WeakCache<>();
+    static <Key, Value> Cache<Key, Value> weak(Supplier<Map<Key, WeakReference<Value>>> supplier) {
+        return new WeakCache<>(supplier);
     }
     
-    static <Key, Value> Cache<Key, Value> soft() {
-        return new SoftCache<>();
+    static <Key, Value> Cache<Key, Value> soft(Supplier<Map<Key, SoftReference<Value>>> supplier) {
+        return new SoftCache<>(supplier);
     }
     
     boolean isPresent(Key key);
@@ -22,7 +23,11 @@ public interface Cache<Key, Value> extends Map<Key, Value> {
 
 class WeakCache<Key, Value> implements Cache<Key, Value> {
     
-    protected final Map<Key, WeakReference<Value>> map = new WeakHashMap<>();
+    protected final Map<Key, WeakReference<Value>> map;
+    
+    public WeakCache(Supplier<Map<Key, WeakReference<Value>>> supplier) {
+        this.map = supplier.get();
+    }
     
     @Override
     public boolean isPresent(Key key) {
@@ -129,7 +134,11 @@ class WeakCache<Key, Value> implements Cache<Key, Value> {
 
 class SoftCache<Key, Value> implements Cache<Key, Value> {
     
-    protected final Map<Key, SoftReference<Value>> map = new WeakHashMap<>();
+    protected final Map<Key, SoftReference<Value>> map;
+    
+    public SoftCache(Supplier<Map<Key, SoftReference<Value>>> supplier) {
+        this.map = supplier.get();
+    }
     
     @Override
     public boolean isPresent(Key key) {

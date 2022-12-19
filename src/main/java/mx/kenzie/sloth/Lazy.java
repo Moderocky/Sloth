@@ -136,7 +136,7 @@ class InstantLazy<Type> extends Lazy<Type> {
     }
     
     @Override
-    public Type await() {
+    public Type await(long millis) {
         return target;
     }
     
@@ -146,12 +146,12 @@ class InstantLazy<Type> extends Lazy<Type> {
     }
     
     @Override
-    public Type await(long millis) {
+    public Type await(long millis, Type alternative) {
         return target;
     }
     
     @Override
-    public Type await(long millis, Type alternative) {
+    public Type await() {
         return target;
     }
     
